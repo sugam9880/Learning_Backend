@@ -18,8 +18,7 @@ app.use(cookieParser())
 import { router } from './routes/user.routes.js';
 
 // routes declaration
-app.use("/api/v1/users", router )
-
+app.use("/api/v1/users", router );
+console.log("working");
 // http://localhost:8000/users/registration
-
 export { app }

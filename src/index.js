@@ -8,11 +8,8 @@ dotenv.config({
 import mongoose from "mongoose"
 import {DB_NAME} from "./constant.js"
 import connectDBFunction from '../src/DB/index.js'
-// import express from 'express'
+import {app} from '../src/app.js'
 
-
-
-const app = express();
 connectDBFunction()
 .then( ()=>{   
 
