@@ -4,6 +4,7 @@ import {asyncHandler} from '../utils/asyncHandler.js'
 import {User} from '../models/user.model.js'
 import { uploadOnCloudinary } from '../utils/cloudinary.js'
 import { apiResponse } from '../utils/Apiresponse.js'
+import { log } from 'console'
 // const registerUser = asyncHandler(async(req,res)=>{
 //    return res.status(200).json({
 //         message:"ok"
@@ -30,21 +31,29 @@ if (existedUser) {
 
 // req.body => it has all the things that are passed but as we are using multer multer provided us the feature of .files
 // and multer gives us the local file path.. like the code below. 
+// console.log("files =>",req.files);
+const avatarLocalPath =  req.files?.avatar[0]?.path;
+// console.log("avatar path",avatarLocalPath);
 
-// const avatarLocalPath =  req.files?.avatar[0]?.path;
-// const coverImagePath = req.files?.coverImage[0]?.path;
+const coverImagePath = req.files?.coverImage[0]?.path;
 
-const avatarLocalPath = await req.files && req.files.avatar && req.files.avatar[0]? req.files.avatar[0].path : null ;
-const coverImagePath = await req.files && req.files.coverImage && req.files.coverImage[0] ? req.files.coverImage[0].path :null;
+// const avatarLocalPath = await req.files && req.files.avatar && req.files.avatar[0]? req.files.avatar[0].path : null ;
+// const coverImagePath = await req.files && req.files.coverImage && req.files.coverImage[0] ? req.files.coverImage[0].path :null;
 
 if (!avatarLocalPath) {
     throw new ApiError(400, 'Avatar Image Is Required')
 }
 
+
+
+
 // uploading Avatar and coverImage  in cloudinary
 const avatar = await uploadOnCloudinary(avatarLocalPath);
+// console.log('Avatar response:',avatar); /////////////////////////////
+
 const coverImage = await uploadOnCloudinary(coverImagePath);
-if(!avatar) throw new ApiError(400, 'Avatar Image Is Required');
+if(!avatar) throw new ApiError(400, 'Avatar Image Is not uploading in cloudinary and it is a compulsray field');
+
  const userDB = await User.create({
         fullName,
         avatar: avatar.url,
@@ -54,9 +63,9 @@ if(!avatar) throw new ApiError(400, 'Avatar Image Is Required');
         userName: userName.toLowerCase()
     })
 
-  const userCreated_ = await User.findById(User._id).select(  // waht it does? 
-    "-password refreshToken"
-  )
+  const userCreated_ = await User.findById(userDB._id).select(  // waht it does? 
+    "-password -refreshToken"
+  ) 
 
   if(!userCreated_) throw new ApiError(500,"something went wrong while registering the user")
 
