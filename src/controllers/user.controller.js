@@ -4,12 +4,27 @@ import {asyncHandler} from '../utils/asyncHandler.js'
 import {User} from '../models/user.model.js'
 import { uploadOnCloudinary } from '../utils/cloudinary.js'
 import { apiResponse } from '../utils/Apiresponse.js'
-import { log } from 'console'
-// const registerUser = asyncHandler(async(req,res)=>{
+// const registerUser = asyncHandler(async(req,res)=>{ // testing
 //    return res.status(200).json({
 //         message:"ok"
 //     })
 // })
+ const generateAccessAndRefreshTokens = async(userId)=>{
+try {
+   const user =  await User.findById(userId);
+  const accessToken =  user.generateAccessToken()
+  const refreshToken =  user.generateRefreshToken()
+
+  user.refreshToken = refreshToken;
+ await user.save({validateBeforeSave:false})
+
+    return({accessToken,refreshToken})
+} catch (error) {
+    throw new ApiError(500,'something went wrong while generating access and refresh token')
+}
+ }
+
+
 const registerUser = asyncHandler(async(req,res)=>{
 const {userName,fullName,email,password} = await req.body
 // console.log(req.body.);
@@ -62,7 +77,7 @@ if(!avatar) throw new ApiError(400, 'Avatar Image Is not uploading in cloudinary
         password,
         userName: userName.toLowerCase()
     })
-
+ // waiting
   const userCreated_ = await User.findById(userDB._id).select(  // waht it does? 
     "-password -refreshToken"
   ) 
@@ -75,7 +90,43 @@ if(!avatar) throw new ApiError(400, 'Avatar Image Is not uploading in cloudinary
 
 
 })
-export  {registerUser}
+
+const loginUser = asyncHandler(async(req,res)=>{
+const {userName,email,password} = req.body;
+    if (!userName || !email) {
+        throw new ApiError(400,"userName or email is required")
+    }
+
+  const user =  await User.findOne({ //gets the data form DataBase
+        $or:[{userName}, {email}]
+    });
+
+    if (!user) {
+        throw new ApiError(404,"user doesnot exist")
+    }
+
+   const isPasswordCorrect =  await user.isPasswordCorrect(password)
+
+   if (!isPasswordCorrect) {
+        throw new ApiError(401,"Entered password is incorrect")
+    }
+
+  const {accessToken,refreshToken} =  await generateAccessAndRefreshTokens(user._id);
+
+  const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
+
+  const options = {
+    httpOnly: true,
+    secure:true // after we do this we cannot modify from front end we can only modify from server
+  }
+  return res.status(200).cookie("accessToken", "accessToken",options).cookie("refreshToken", "refreshToken", options).json(
+    new apiResponse(200,{
+        user: loggedInUser,accessToken,refreshToken
+    },"user Logged In SuccessFully")
+  )
+
+})
+export  {registerUser,loginUser}
 
 //get user details from frontend
  
