@@ -58,10 +58,6 @@ const coverImagePath = req.files?.coverImage[0]?.path;
 if (!avatarLocalPath) {
     throw new ApiError(400, 'Avatar Image Is Required')
 }
-
-
-
-
 // uploading Avatar and coverImage  in cloudinary
 const avatar = await uploadOnCloudinary(avatarLocalPath);
 // console.log('Avatar response:',avatar); /////////////////////////////
@@ -87,13 +83,11 @@ if(!avatar) throw new ApiError(400, 'Avatar Image Is not uploading in cloudinary
     return res.status(201).json(
         new apiResponse(200,userCreated_,"user registered successfully")
     )
-
-
 })
 
 const loginUser = asyncHandler(async(req,res)=>{
 const {userName,email,password} = req.body;
-    if (!userName || !email) {
+    if (!(userName || !email)) {
         throw new ApiError(400,"userName or email is required")
     }
 
@@ -119,14 +113,34 @@ const {userName,email,password} = req.body;
     httpOnly: true,
     secure:true // after we do this we cannot modify from front end we can only modify from server
   }
-  return res.status(200).cookie("accessToken", "accessToken",options).cookie("refreshToken", "refreshToken", options).json(
+  return res.status(200).cookie("accessToken", accessToken,options).cookie("refreshToken", refreshToken, options).json(
     new apiResponse(200,{
         user: loggedInUser,accessToken,refreshToken
     },"user Logged In SuccessFully")
   )
 
 })
-export  {registerUser,loginUser}
+
+const logOutUser = asyncHandler(async(req,res)=>{ //deleting token
+     User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $set:{
+                refreshToken: undefined  
+            }
+        }
+     )
+
+      const options = {
+    httpOnly: true,
+    secure:true // after we do this we cannot modify from front end we can only modify from server
+  }
+  return res.status(200).clearCookie('accessToken',options).clearCookie('refreshToken', options).json(
+    new apiResponse(200,{},'User Logged Out ')
+  )
+
+})
+export  {registerUser,loginUser,logOutUser}
 
 //get user details from frontend
  
