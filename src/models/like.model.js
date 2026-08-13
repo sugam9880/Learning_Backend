@@ -17,4 +17,4 @@ const likeSchema = new Schema(
     },{timestamps:true})
 
 
-    export const Like = mongoose.model('Like', tweetSchema)
+    export const Like = mongoose.model('Like', likeSchema)
