@@ -14,3 +14,9 @@ const subscriptionSchema = new Schema(
 
 
 export const Subscription = mongoose.model('Subscription', subscriptionSchema)
+
+
+// await Subscription.create({ 
+//     subscriber: req.user._id,
+//     channel: channelId
+// });

@@ -36,12 +36,11 @@ try {
 
 const registerUser = asyncHandler(async(req,res)=>{
 const {userName,fullName,email,password} = await req.body
-console.log(req.body); ////////////////////////////////////////
-
-console.log(userName);
-console.log(fullName);
-console.log(email);
-console.log(password); 
+// console.log(req.body); ////////////////////////////////////////
+// console.log(userName);
+// console.log(fullName);
+// console.log(email);
+// console.log(password); 
 
  // checking we have got all the things or not
 if ([userName,fullName,email,password].some( (field)=>field?.trim() == "")) {
