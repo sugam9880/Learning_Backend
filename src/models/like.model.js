@@ -6,13 +6,17 @@ const likeSchema = new Schema(
             type: mongoose.Types.ObjectId,
             ref:'comment'
         },
-        video:{
+        videoId:{
             type:mongoose.Types.ObjectId,
             ref:'Video'
         },
         tweet:{
             type: mongoose.Types.ObjectId,
             ref:'Tweet'
+        },
+        likedBy:{
+            type:mongoose.Types.ObjectId,
+            ref:"User"
         }
     },{timestamps:true})
 

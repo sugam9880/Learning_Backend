@@ -6,7 +6,7 @@ const commentSchema = new Schema(
             type:String,
             required: true
         },
-        video:{
+        videoId:{
             type:mongoose.Types.ObjectId,
             ref:'Video'
         },
