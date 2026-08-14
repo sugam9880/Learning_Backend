@@ -53,11 +53,13 @@ const unsubscrbe = asyncHandler(async(req,res)=>{
     }
     const user = req.user?._id;
 
-    const subscribeDoc = await Subscription.findById(channelId);
+    const subscribeDoc = await Subscription.findById(channelId) || '';
 
     if (!subscribeDoc) {
         throw new ApiError(400,'you havent subscribe yet')
     }
+
+    const unsubscribed = await Subscription.findByIdAndDelete(channelId)
 })
 
-export {subScription}
+export {subScription,unsubscrbe}

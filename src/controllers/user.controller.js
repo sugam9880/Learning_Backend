@@ -371,6 +371,7 @@ const channel =  await User.aggregate(
         }
     ]
   )
+  console.log(channel) // 
 
   if(!channel?.length){
     throw new ApiError(400,'channel doesnot exists')
