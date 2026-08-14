@@ -14,20 +14,18 @@ const subScription = asyncHandler(async(req,res)=>{
     if (!channelId) {
         throw new ApiError(400,'not found');
     }
-
     const subscriber = req.user?._id; // the one who is subscribing
-    
     const channel = await User.findById(channelId); // from DB // who is subscribed
 
     if (!channel) {
         throw new ApiError(404,"Channel not found")
     }
-
+    
     const alreadySubscribed = await Subscription.findOne({
         subscriber: req.user._id,
         channel: channelId
     })
-
+    
     if (alreadySubscribed) {
         throw new ApiError(409,'already Subscribed');
     }
@@ -37,7 +35,29 @@ const subScription = asyncHandler(async(req,res)=>{
         channelId
     })
 
+    const subscribeDoc = await Subscription.findById(channelId);
+
+    if(!subscribeDoc){
+        throw new ApiError(409,"Subscription Failed")
+    }
+
     return res.status(200).json(
-        new apiResponse(200,{subscribe},'subscribed successfully' )
+        new apiResponse(200,{subscribeDoc},'subscribed successfully' )
     )
 })
+
+const unsubscrbe = asyncHandler(async(req,res)=>{
+    const {channelId} = req.params;
+    if (!channelId) {
+        throw new ApiError(400,'not found');
+    }
+    const user = req.user?._id;
+
+    const subscribeDoc = await Subscription.findById(channelId);
+
+    if (!subscribeDoc) {
+        throw new ApiError(400,'you havent subscribe yet')
+    }
+})
+
+export {subScription}

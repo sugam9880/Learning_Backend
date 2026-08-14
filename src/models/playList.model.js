@@ -2,19 +2,19 @@ import mongoose, {Schema} from 'mongoose'
 
 const playlistSchema = new Schema(
     {
-        name:{
+        name:{ // playListName
             type:String,
             required:true
         },
-        description:{
+        description:{ //playList Description
             type:String,
             required:Boolean
         },
-        video:{
+        video:{ // videos
             type:mongoose.Types.ObjectId,
             ref:'Video'
         }
     },{timestamps:true})
 
 
-    export const Playlist = mongoose.model('Playlist', tweetSchema)
+    export const Playlist = mongoose.model('Playlist', playlistSchema)
