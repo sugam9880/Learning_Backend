@@ -17,6 +17,10 @@ const likeSchema = new Schema(
         likedBy:{
             type:mongoose.Types.ObjectId,
             ref:"User"
+        },
+        dislikedBy:{
+            type:mongoose.Types.ObjectId,
+            ref:"User"
         }
     },{timestamps:true})
 

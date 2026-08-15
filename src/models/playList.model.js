@@ -10,9 +10,15 @@ const playlistSchema = new Schema(
             type:String,
             required:Boolean
         },
-        video:{ // videos
+        videoId:[
+            { // videos
             type:mongoose.Types.ObjectId,
             ref:'Video'
+        }
+        ],
+        user:{
+            type:mongoose.Types.ObjectId,
+            ref:"User"
         }
     },{timestamps:true})
 

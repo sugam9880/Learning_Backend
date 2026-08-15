@@ -5,7 +5,8 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import {Comment} from "../models/comment.model.js"
 
 const addComent = asyncHandler(async(req,res)=>{
-    const {comment,videoId} = req.body; // send from front-end 
+    const {comment} = req.body; // send from front-end 
+    const {videoId} = req.params
 
     if (!(comment && videoId)) {
         throw ApiError(400,"Invalid");
@@ -32,14 +33,15 @@ const addComent = asyncHandler(async(req,res)=>{
 })
 
 const updateComment = asyncHandler(async(req,res)=>{
-    const {comment,videoId} = req.body;
+    const {comment} = req.body;
+    const {commentId} = req.params;
 
-    if (!(comment && videoId)) {
+    if (!(comment && commentId)) {
         throw new ApiError(409,"comment required")
     }
 
     const video = await Comment.findByIdAndUpdate(
-        videoId,
+        commentId,
         {
             $set:{
                 comment
@@ -62,20 +64,13 @@ const updateComment = asyncHandler(async(req,res)=>{
 })
 
 const deleteComment = asyncHandler(async(req,res)=>{
-    const {videoId} = req.body;
+    const {commentID} = req.params;
 
-    if (!videoId) {
-        throw new ApiError(400,"VideoId required")
+    if (!commentID) {
+        throw new ApiError(400,"commentID required")
     }
 
-    const deleting = await Comment.findByIdAndUpdate(videoId,
-        {
-            $set:{
-                comment: undefined
-            }
-        },
-        {new:true}
-    )
+    const deleting = await Comment.findByIdAndDelete(commentID)
 
     if (!deleting) {
         throw new ApiError(400,'something went wrong')
