@@ -8,7 +8,9 @@ import { uploadOnCloudinary } from '../utils/cloudinary.js'
 
 const uploadvideo = asyncHandler(async(req,res)=>{
 
-    const {title,description,views,owner,isPublished} = req.body;
+
+    const {title,description,views,isPublished} = req.body;
+    const owner = req.user._id;
 
     const videoLocalPath = req.files.videoFile[0].path;
     const thumbnailLocalPath = req.files.thumbnail[0].path;

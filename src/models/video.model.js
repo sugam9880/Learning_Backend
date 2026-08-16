@@ -9,9 +9,11 @@ const videoSchema = new Schema(
             type:String,     //cloudinary
             required:true
         },
-        videoFile:{
+        videoFile:
+            {
             type:String,
         },
+        
         title:{
             type:String,
             required:true

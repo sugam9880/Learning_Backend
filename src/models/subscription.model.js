@@ -13,10 +13,4 @@ const subscriptionSchema = new Schema(
     },{timestamps:true})
 
 
-export const Subscription = mongoose.model('Subscription', subscriptionSchema)
-
-
-// await Subscription.create({ 
-//     subscriber: req.user._id,
-//     channel: channelId
-// });
+export const Subscription = mongoose.model('Subscription', subscriptionSchema);

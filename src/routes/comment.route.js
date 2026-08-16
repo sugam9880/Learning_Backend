@@ -6,6 +6,6 @@ import { addComent, deleteComment, updateComment } from "../controllers/comment.
 const router = Router();
 
 router.route("/addingcomment/comment/:videoId").post(verifyjwt,addComent)
-router.route("/updatingcomment/commentId/:videoId").patch(verifyjwt,updateComment)
-router.route("/deletingcomment/commentId/:videoId").delete(verifyjwt,deleteComment)
+router.route("/updatingcomment/:commentId/:videoId").patch(verifyjwt,updateComment)
+router.route("/deletingcomment/:commentId/:videoId").delete(verifyjwt,deleteComment)
 

@@ -5,7 +5,7 @@ import {Subscription} from '../models/subscription.model.js'
 import mongoose from 'mongoose'
 import { User } from '../models/user.model.js'
 
-const subScription = asyncHandler(async(req,res)=>{
+const subscribe = asyncHandler(async(req,res)=>{
     // get the data from backend
     // check data 
     // store the channel_id and user_id who is loggedIn
@@ -53,13 +53,12 @@ const unsubscrbe = asyncHandler(async(req,res)=>{
     }
     const user = req.user?._id;
 
-    const subscribeDoc = await Subscription.findById(channelId) || '';
+    const unsubscribed = await Subscription.findByIdAndDelete(channelId);
 
-    if (!subscribeDoc) {
+        if (!unsubscribed) {
         throw new ApiError(400,'you havent subscribe yet')
     }
-
-    const unsubscribed = await Subscription.findByIdAndDelete(channelId)
+    return res.status(200).json(200,{unsubscribed}, "unsubscribe successfully")
 })
 
-export {subScription,unsubscrbe}
+export {subscribe,unsubscrbe}

@@ -115,4 +115,4 @@ const deletePlayList = asyncHandler(async(req,res)=>{
   )
 })
 
-export {addToPalyList}
+export {createPlayList,addToPalyList,removeFromPlayList,deletePlayList}
