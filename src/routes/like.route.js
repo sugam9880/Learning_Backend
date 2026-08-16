@@ -3,7 +3,9 @@ import { Router } from "express"
 import { verifyjwt } from '../middlewares/auth.middleware.js'
 import { dislike, like } from "../controllers/like.controller.js";
 
-const router = Route();
+const likeRouter = Router();
 
-router.route("/liked/:videoId").post(verifyjwt,like);
-router.route("/disliked/:videoId").post(verifyjwt,dislike);
+likeRouter.route("/liked/:videoId").post(verifyjwt,like);
+likeRouter.route("/disliked/:videoId").post(verifyjwt,dislike);
+
+export {likeRouter}

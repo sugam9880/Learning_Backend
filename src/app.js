@@ -16,9 +16,21 @@ app.use(cookieParser())
 
 //routes
 import { router } from './routes/user.routes.js';
+import { commentRouter } from './routes/comment.route.js';
+import { playlistRouter } from './routes/playList.route.js';
+import { subscriptionRouter } from './routes/subscription.route.js';
+import { videoRouter } from './routes/video.routes.js';
+import { likeRouter } from './routes/like.route.js';
+
 
 // routes declaration
 app.use("/api/v1/users", router );
+app.use("/api/v1/comment",commentRouter)
+app.use("/api/v1/playlist",playlistRouter)
+app.use("/api/v1/subscription",subscriptionRouter)
+app.use("/api/v1/video",videoRouter)
+app.use("/api/v1/like",likeRouter)
+
 console.log("working");
 // http://localhost:8000/users/registration
 export { app }

@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { upload } from "../middlewares/multer.middleware";
+import { upload } from "../middlewares/multer.middleware.js";
 import { verifyjwt } from '../middlewares/auth.middleware.js'
-import { video } from "../controllers/video.contoller.js";
+import { uploadvideo,removeVideo } from "../controllers/video.contoller.js";
 
-const router = Router();
-router.route("/uploadingVideo").post(
+const videoRouter = Router();
+videoRouter.route("/uploadingVideo").post(
     upload.fields([
         {
             name:"videoFile",
@@ -17,5 +17,7 @@ router.route("/uploadingVideo").post(
     ]),
   verifyjwt,uploadvideo)
 
-  router.route("/deletevideo/:videoId").get(removeVideo)
+  videoRouter.route("/deletevideo/:videoId").get(removeVideo)
+
+  export {videoRouter}
 

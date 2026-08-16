@@ -1,10 +1,12 @@
 import {Router} from 'express'
-import {verifyjwt} from '../middlewares/auth.middleware'
-import { subscribe, unsubscrbe } from '../controllers/subscription.controller';
+import {verifyjwt} from '../middlewares/auth.middleware.js'
+import { subscribe, unsubscrbe } from '../controllers/subscription.controller.js';
 
-const router = Route();
+const subscriptionRouter = Router();
 // subscribe
-router.route("/userSubscribe/:channelId").post(verifyjwt,subscribe);
+subscriptionRouter.route("/userSubscribe/:channelId").post(verifyjwt,subscribe);
 
 // unsubscribe
-router.route("/userUnsubscribe/:channelId").delete(verifyjwt,unsubscrbe);
+subscriptionRouter.route("/userUnsubscribe/:channelId").delete(verifyjwt,unsubscrbe);
+
+export {subscriptionRouter}
