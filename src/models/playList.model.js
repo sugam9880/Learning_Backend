@@ -16,7 +16,7 @@ const playlistSchema = new Schema(
             ref:'Video'
         }
         ],
-        user:{
+        owner:{
             type:mongoose.Types.ObjectId,
             ref:"User"
         }
