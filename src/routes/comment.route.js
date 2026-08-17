@@ -7,7 +7,7 @@ const commentRouter = Router();
 
 commentRouter.route("/addingcomment/comment/:videoId").post(verifyjwt,addComent)
 commentRouter.route("/updatingcomment/:commentId/:videoId").patch(verifyjwt,updateComment)
-commentRouter.route("/deletingcomment/:commentId/:videoId").delete(verifyjwt,deleteComment)
+commentRouter.route("/deletingcomment/:commentID/:videoId").delete(verifyjwt,deleteComment)
 
 export {commentRouter}
 

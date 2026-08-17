@@ -109,13 +109,13 @@ if(!avatar) throw new ApiError(400, 'Avatar Image Is not uploading in cloudinary
 
 const loginUser = asyncHandler(async(req,res)=>{
 const {userName,email,password} = req.body;
-    if (!(userName || !email)) {
+    if (!(userName || email)) {
         throw new ApiError(400,"userName or email is required")
     }
 
   const user =  await User.findOne({ //gets the data form DataBase
         $or:[{userName}, {email}]
-    }).select("-password -refreshToken");
+    })
 
     console.log("user from database inside login =>",user);     ///////////////
     
@@ -221,7 +221,7 @@ const changeCurrentPassword = asyncHandler(async(req,res)=>{
  await user.save({validateBeforeSave:false})
 
  return res.status(200).json(
-    new apiResponse(200,{},'password changed successfully')
+    new apiResponse(200,isPasswordCorrect,'password changed successfully')
  )
 
 })

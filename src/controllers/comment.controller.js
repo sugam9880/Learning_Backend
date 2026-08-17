@@ -20,14 +20,18 @@ const addComent = asyncHandler(async(req,res)=>{
         videoId
     })
 
-    const commenterDoc = await Comment.findById(videoId);
-
-    if (!commenterDoc) {
-        throw new ApiError(400,"Invalid Comment")
+    if (!commenter) {
+        throw new ApiError(400,'db not created')
     }
 
+    // const commenterDoc = await Comment.findById(videoId);
+
+    // if (!commenterDoc) {
+    //     throw new ApiError(400,"Invalid Comment")
+    // }
+
     return res.status(200).json(
-        new apiResponse(200,{commenterDoc}, 'comment submitted')
+        new apiResponse(200,{commenter}, 'comment submitted')
     )
 
 })

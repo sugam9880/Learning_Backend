@@ -31,13 +31,13 @@ const uploadvideo = asyncHandler(async(req,res)=>{
         thumbnail: thumbnail.url,
         title,
         description,
-        duration: videoFile.duration,
+        // duration: videoFile.duration,
         views,
         isPublished,
         owner
     })
 
-    const videos_info = Video.findById(userVideo._id);
+    const videos_info = await Video.findById(userVideo._id);
     if (!videos_info) {
         throw new ApiError(404,'something went wrong')
     }

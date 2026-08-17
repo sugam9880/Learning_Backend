@@ -6,6 +6,6 @@ import { dislike, like } from "../controllers/like.controller.js";
 const likeRouter = Router();
 
 likeRouter.route("/liked/:videoId").post(verifyjwt,like);
-likeRouter.route("/disliked/:videoId").post(verifyjwt,dislike);
+likeRouter.route("/disliked/:videoId").delete(verifyjwt,dislike);
 
 export {likeRouter}

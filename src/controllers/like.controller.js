@@ -17,7 +17,7 @@ const like = asyncHandler(async(req,res)=>{
         videoId
     })
 
-    if (!videoLikedBy) {
+    if (!likeInfo) {
         throw new ApiError(409,"Something went wrong")
     }
 
