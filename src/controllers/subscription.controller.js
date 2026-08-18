@@ -35,14 +35,13 @@ const subscribe = asyncHandler(async(req,res)=>{
         channelId
     })
 
-    const subscribeDoc = await Subscription.findById(channelId);
-
-    if(!subscribeDoc){
-        throw new ApiError(409,"Subscription Failed")
+    if (!subscribe) {
+        throw new ApiError(409,"went wrong!")
     }
 
+
     return res.status(200).json(
-        new apiResponse(200,{subscribeDoc},'subscribed successfully' )
+        new apiResponse(200,{subscribe},'subscribed successfully' )
     )
 })
 

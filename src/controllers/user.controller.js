@@ -326,7 +326,7 @@ const channel =  await User.aggregate(
             $lookup:{
                 from: "subscriptions",
                 localField: "_id",
-                foreignField: "channel",
+                foreignField: "channelId",
                 as: "subscribers"
             }
         },
@@ -362,7 +362,7 @@ const channel =  await User.aggregate(
                 email:1,
                 subscriberscount:1,
                 subscribedToCount:1,
-                isSubscribed:1,
+                // isSubscribed:1,
                 avatar:1,
                 coverImage:1
 
@@ -378,8 +378,8 @@ const channel =  await User.aggregate(
   }
 
   return res.status(200)
-  .josn(
-   new apiResponse(200,channel,"User Channel Fetched")
+  .json(
+   new apiResponse(200,{channel},"User Channel Fetched")
   )
 
 
