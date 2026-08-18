@@ -324,10 +324,10 @@ const channel =  await User.aggregate(
         },
         {
             $lookup:{
-                from: "subscriptions",
+                from: "subscriptions", // goes to subscription DB / DB model
                 localField: "_id",
                 foreignField: "channelId",
-                as: "subscribers"
+                as: "subscribers" // creates an array with this name
             }
         },
         {
@@ -353,20 +353,6 @@ const channel =  await User.aggregate(
                         else: false
                     }
                 }
-            }
-        },
-        {
-            $project:{
-                fullName:1,
-                userName: 1,
-                email:1,
-                subscriberscount:1,
-                subscribedToCount:1,
-                // isSubscribed:1,
-                avatar:1,
-                coverImage:1
-
-
             }
         }
     ]

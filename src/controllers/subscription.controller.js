@@ -23,7 +23,7 @@ const subscribe = asyncHandler(async(req,res)=>{
     
     const alreadySubscribed = await Subscription.findOne({
         subscriber: req.user._id,
-        channel: channelId
+        channelId: channelId
     })
     
     if (alreadySubscribed) {
