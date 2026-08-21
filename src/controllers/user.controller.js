@@ -86,11 +86,14 @@ if(!avatar) throw new ApiError(400, 'Avatar Image Is not uploading in cloudinary
 
  const userDB = await User.create({
         fullName,
+        userName: userName.toLowerCase(),
+        email,
+         password,
         avatar: avatar.url,
         coverImage: coverImage?.url || "",
-        email,
-        password,
-        userName: userName.toLowerCase()
+        
+       
+        
     })
  // waiting
   const userCreated_ = await User.findById(userDB._id).select(  // it is a DB query where we get data from DB
