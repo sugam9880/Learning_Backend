@@ -5,13 +5,8 @@ import {User} from '../models/user.model.js'
 import { uploadOnCloudinary } from '../utils/cloudinary.js'
 import { apiResponse } from '../utils/Apiresponse.js'
 import jwt from 'jsonwebtoken'
-// import {  } from 'mongoose'
 import mongoose from 'mongoose'
-// const registerUser = asyncHandler(async(req,res)=>{ // testing
-//    return res.status(200).json({
-//         message:"ok"
-//     })
-// })
+
  const generateAccessAndRefreshTokens = async(userId)=>{
 try {
    const user =  await User.findById(userId);
@@ -35,8 +30,9 @@ try {
 
 
 const registerUser = asyncHandler(async(req,res)=>{
-const {userName,fullName,email,password} = await req.body
-// console.log(req.body); ////////////////////////////////////////
+const {userName,fullName,email,password} =  req.body
+
+console.log(req.body); ////////////////////////////////////////
 // console.log(userName);
 // console.log(fullName);
 // console.log(email);
@@ -49,7 +45,7 @@ if ([userName,fullName,email,password].some( (field)=>field?.trim() == "")) {
 
  // finding wheather the user already exist or not. 
  const existedUser = await User.findOne({
-    $or: [{userName}, {password}]
+    $or: [{userName}, {email}]
 })
 
 console.log("existedUser from DataBase",existedUser); ///////////////////// at first it will be null and again same thing is called it gets printed

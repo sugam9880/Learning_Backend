@@ -8,15 +8,16 @@ import { uploadOnCloudinary } from '../utils/cloudinary.js'
 
 const uploadvideo = asyncHandler(async(req,res)=>{
 
-
-    const {title,description,views,isPublished} = req.body;
+    // console.log('BODY',req.body);
+    // console.log("files",req.files);
+    const {title,description} = req.body;
     const owner = req.user._id;
 
-    const videoLocalPath = req.files.videoFile[0].path;
-    const thumbnailLocalPath = req.files.thumbnail[0].path;
+    const videoLocalPath = req.files?.videoFile[0]?.path;
+    const thumbnailLocalPath = req.files?.thumbnail[0].path;
 
-    if (!(videoLocalPath && thumbnailLocalPath)) {
-        throw new ApiError(409,'didnot got the video and thumbnail')
+    if (!videoLocalPath) {
+        throw new ApiError(409,'didnot got the video')
     }
 
     const videoFile = await uploadOnCloudinary(videoLocalPath); // response 
@@ -28,12 +29,10 @@ const uploadvideo = asyncHandler(async(req,res)=>{
 
     const userVideo = await Video.create({
         videoFile: videoFile.url,
-        thumbnail: thumbnail.url,
+        thumbnail: thumbnail.url || null,
         title,
         description,
         // duration: videoFile.duration,
-        views,
-        isPublished,
         owner
     })
 
