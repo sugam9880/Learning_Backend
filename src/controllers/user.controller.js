@@ -139,7 +139,9 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Entered password is incorrect");
   }
 
-  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens( user._id);
+  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+    user._id
+  );
   //   console.log(accessToken);
   //   console.log(refreshToken);
 
@@ -207,7 +209,10 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     }
 
     if (incomingRefreshToken !== user?.refreshToken) {
-      throw new ApiError(401, "Refresh Token is Expired ");
+      throw new ApiError(
+        401,
+        "Refresh Token is Expired or not valid refreshToken "
+      );
     }
 
     const options = {
@@ -402,9 +407,9 @@ const getWatchHistory = asyncHandler(async (req, res) => {
     },
     {
       $lookup: {
-        from: "Video",
+        from: "videos",
         localField: "watchHistory",
-        foreignField: _id,
+        foreignField: "_id",
         as: "watchHistory",
         pipeline: [
           {
@@ -447,6 +452,40 @@ const getWatchHistory = asyncHandler(async (req, res) => {
     );
 });
 
+const getUserVideos = asyncHandler(async (req, res) => {
+  const user = await User.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(req.user._id),
+      },
+    },
+    {
+      $lookup: {
+        from: "videos",
+        localField: "_id",
+        foreignField: "owner",
+        as: "userVideos",
+      },
+    },
+    {
+      $addFields: {
+        videoscount: {
+          $size: "$userVideos",
+        },
+      },
+    },
+  ]);
+  if (!user?.length) {
+    throw new ApiError(400, "video not found");
+  }
+
+  return res
+    .status(200)
+    .json(new apiResponse(200, { user }, "videos got successfully"));
+});
+
+const getLikedVideos = asyncHandler(async (req, res) => {});
+
 export {
   registerUser,
   loginUser,
@@ -459,6 +498,8 @@ export {
   updataUserCoverImage,
   getUserChannelProfile,
   getWatchHistory,
+  getUserVideos,
+  getLikedVideos,
 };
 
 //get user details from frontend
