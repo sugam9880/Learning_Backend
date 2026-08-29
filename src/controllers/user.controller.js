@@ -492,6 +492,8 @@ const getUserVideos = asyncHandler(async (req, res) => {
 const getLikedVideos = asyncHandler(async (req, res) => {});
 
 const getAllVideos = asyncHandler(async (req, res) => {
+  console.log("before pipeline");
+
   const video = await User.aggregate([
     {
       $lookup: {
@@ -508,12 +510,16 @@ const getAllVideos = asyncHandler(async (req, res) => {
       },
     },
   ]);
+  console.log("after pipeline");
 
   if (!video) {
     throw new ApiError(401, "No Video Available");
   }
+  console.log(getAllVideos);
 
-  return res.status(200, { video }, "All video got successfully");
+  return res
+    .status(200)
+    .json(new apiResponse(200, { video }, "got video successfully"));
 });
 
 export {
