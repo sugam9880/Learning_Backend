@@ -61,4 +61,15 @@ const removeVideo = asyncHandler(async (req, res) => {
     .json(new apiResponse(200, {}, " video has been removed"));
 });
 
+// const getAllVideos = asyncHandler(async (req, res) => {
+//   const Videos = Video.find();
+//   const video = Video.aggregate[
+//     {
+//       $lookup:{
+
+//       }
+//     }
+//   ]
+// });
+
 export { uploadvideo, removeVideo };

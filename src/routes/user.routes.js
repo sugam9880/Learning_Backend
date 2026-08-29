@@ -12,6 +12,7 @@ import {
   getUserChannelProfile,
   getWatchHistory,
   getUserVideos,
+  getAllVideos,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyjwt } from "../middlewares/auth.middleware.js";
@@ -54,5 +55,6 @@ router
 router.route("/c/:userName").get(verifyjwt, getUserChannelProfile);
 router.route("/watcHistory").get(verifyjwt, getWatchHistory);
 router.route("/user_videos").get(verifyjwt, getUserVideos);
+router.route("/All_YtVideos").get(getAllVideos);
 
 export { router };

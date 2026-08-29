@@ -474,6 +474,11 @@ const getUserVideos = asyncHandler(async (req, res) => {
         },
       },
     },
+    {
+      $project: {
+        userVideos: 1,
+      },
+    },
   ]);
   if (!user?.length) {
     throw new ApiError(400, "video not found");
@@ -485,6 +490,31 @@ const getUserVideos = asyncHandler(async (req, res) => {
 });
 
 const getLikedVideos = asyncHandler(async (req, res) => {});
+
+const getAllVideos = asyncHandler(async (req, res) => {
+  const video = await User.aggregate([
+    {
+      $lookup: {
+        from: "videos",
+        localField: "_id",
+        foreignField: "owner",
+        as: "allVideos",
+      },
+    },
+    {
+      $project: {
+        password: 0,
+        refreshToken: 0,
+      },
+    },
+  ]);
+
+  if (!video) {
+    throw new ApiError(401, "No Video Available");
+  }
+
+  return res.status(200, { video }, "All video got successfully");
+});
 
 export {
   registerUser,
@@ -500,6 +530,7 @@ export {
   getWatchHistory,
   getUserVideos,
   getLikedVideos,
+  getAllVideos,
 };
 
 //get user details from frontend
