@@ -491,37 +491,6 @@ const getUserVideos = asyncHandler(async (req, res) => {
 
 const getLikedVideos = asyncHandler(async (req, res) => {});
 
-const getAllVideos = asyncHandler(async (req, res) => {
-  console.log("before pipeline");
-
-  const video = await User.aggregate([
-    {
-      $lookup: {
-        from: "videos",
-        localField: "_id",
-        foreignField: "owner",
-        as: "allVideos",
-      },
-    },
-    {
-      $project: {
-        password: 0,
-        refreshToken: 0,
-      },
-    },
-  ]);
-  console.log("after pipeline");
-
-  if (!video) {
-    throw new ApiError(401, "No Video Available");
-  }
-  console.log(getAllVideos);
-
-  return res
-    .status(200)
-    .json(new apiResponse(200, { video }, "got video successfully"));
-});
-
 export {
   registerUser,
   loginUser,
@@ -536,7 +505,6 @@ export {
   getWatchHistory,
   getUserVideos,
   getLikedVideos,
-  getAllVideos,
 };
 
 //get user details from frontend

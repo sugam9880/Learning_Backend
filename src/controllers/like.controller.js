@@ -3,13 +3,15 @@ import { apiResponse } from "../utils/Apiresponse.js";
 import mongoose from "mongoose";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { Like } from "../models/like.model.js";
-import { User } from "../models/user.model.js";
 
 const like = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
   const likedBy = req.user?._id;
+  if (!videoId) {
+    throw new ApiError(304, "videoId is required");
+  }
   if (!likedBy) {
-    throw new ApiError(400, "invalid");
+    throw new ApiError(400, "unauthorized");
   }
 
   const likeInfo = await Like.create({
