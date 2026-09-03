@@ -14,6 +14,13 @@ const like = asyncHandler(async (req, res) => {
     throw new ApiError(400, "unauthorized");
   }
 
+  const AlreadyExist = await Like.findOne({ videoId, likedBy });
+
+  if (AlreadyExist) {
+    // dislike();
+    throw new ApiError(409, "already Exist");
+  }
+
   const likeInfo = await Like.create({
     likedBy,
     videoId,
@@ -28,14 +35,14 @@ const like = asyncHandler(async (req, res) => {
 
 const dislike = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
-  const likedBy = req.user?._id;
+  const dislikedBy = req.user?._id;
 
   if (!(dislikedBy && videoId)) {
     throw new ApiError(409, "not got the id");
   }
   const disliked = await Like.findOneAndDelete({
     videoId,
-    likedBy,
+    likedBy: dislikedBy,
   });
 
   if (!disliked) {
@@ -44,6 +51,35 @@ const dislike = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new apiResponse(200, {}, "Disliked Successfully"));
+    .json(new apiResponse(200, { disliked }, "Disliked Successfully"));
 });
+
+// const checkLikeStatus = asyncHandler(async (req, res) => {
+//   // const { videoId } = req.params;
+//   // const likedBy = req.user?._id;
+//   // const findStatus = Like.find((videoId,likedBy));
+//   const findStatus = await Like.aggregate([
+//     {
+//       $lookup: {
+//         from: "users",
+//         localField: "likedBy",
+//         foreignField: "_id",
+//         as: "likeStatus",
+//       },
+//     },
+//     {
+//       $addFields: {
+//         likecount: {
+//           $size: "$likeStatus",
+//         },
+//       },
+//     },
+//   ]);
+//   if (!findStatus && findStatus.length > 0) {
+//     throw new ApiError(401, "no data");
+//   }
+//   return res
+//     .status(200)
+//     .json(new apiResponse(200, { findStatus }, "got the data"));
+// });
 export { like, dislike };

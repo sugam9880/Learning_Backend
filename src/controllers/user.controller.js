@@ -489,7 +489,21 @@ const getUserVideos = asyncHandler(async (req, res) => {
     .json(new apiResponse(200, { user }, "videos got successfully"));
 });
 
-const getLikedVideos = asyncHandler(async (req, res) => {});
+const getLikedVideos = asyncHandler(async (req, res) => {
+  const findvidoes = await User.aggregate([
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "likedBy",
+        as: "like videos",
+      },
+    },
+  ]);
+  if (!findvidoes) {
+    throw new ApiError(200, { findvidoes }, "got videos");
+  }
+});
 
 export {
   registerUser,
