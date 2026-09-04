@@ -54,32 +54,23 @@ const dislike = asyncHandler(async (req, res) => {
     .json(new apiResponse(200, { disliked }, "Disliked Successfully"));
 });
 
-// const checkLikeStatus = asyncHandler(async (req, res) => {
-//   // const { videoId } = req.params;
-//   // const likedBy = req.user?._id;
-//   // const findStatus = Like.find((videoId,likedBy));
-//   const findStatus = await Like.aggregate([
-//     {
-//       $lookup: {
-//         from: "users",
-//         localField: "likedBy",
-//         foreignField: "_id",
-//         as: "likeStatus",
-//       },
-//     },
-//     {
-//       $addFields: {
-//         likecount: {
-//           $size: "$likeStatus",
-//         },
-//       },
-//     },
-//   ]);
-//   if (!findStatus && findStatus.length > 0) {
-//     throw new ApiError(401, "no data");
+// const getLikeDocument = asyncHandler(async (req, res) => {
+//   const geTLikeDoc = await Like.find();
+//   if (!geTLikeDoc && geTLikeDoc.length > 0) {
+//     throw new ApiError(409, "no likes yet");
 //   }
 //   return res
 //     .status(200)
-//     .json(new apiResponse(200, { findStatus }, "got the data"));
+//     .json(new apiResponse(200, { geTLikeDoc }, "got like doc"));
 // });
-export { like, dislike };
+
+const likeStatus = asyncHandler(async (req, res) => {
+  const { videoId } = req.params;
+  const like = await Like.findOne({ videoId });
+
+  if (like) {
+    return res.status(200).json(new apiResponse(200, true, " liked"));
+  }
+  return res.status(200).json(new apiResponse(200, false, " not liked"));
+});
+export { like, dislike, likeStatus };
