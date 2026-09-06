@@ -194,47 +194,48 @@ const logOutUser = asyncHandler(async (req, res) => {
 const refreshAccessToken = asyncHandler(async (req, res) => {
   const incomingRefreshToken =
     req.cookies?.refreshToken || req.body.refreshToken;
+  // console.log("controller check refreshToken");
+
   if (!incomingRefreshToken) {
-    throw new ApiError(401, "unauthorized request");
-
-    const decodedRefreshToken = jwt.verify(
-      incomingRefreshToken,
-      process.env.REFRESH_TOKEN_SECRET
-    );
-
-    const user = await User.findById(decodedRefreshToken._id);
-
-    if (!user) {
-      throw new ApiError(401, "invalid refresh token");
-    }
-
-    if (incomingRefreshToken !== user?.refreshToken) {
-      throw new ApiError(
-        401,
-        "Refresh Token is Expired or not valid refreshToken "
-      );
-    }
-
-    const options = {
-      httpOnly: true,
-      secure: true,
-    };
-
-    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
-      user._id
-    );
-    return res
-      .status(200)
-      .cookie("accessToken", accessToken, options)
-      .cookie("refreshToken", refreshToken, options)
-      .json(
-        new apiResponse(
-          200,
-          { refreshToken, accessToken },
-          "accessToken refreshed"
-        )
-      );
+    throw new ApiError(401, "unauthorized request token not available");
   }
+  const decodedRefreshToken = jwt.verify(
+    incomingRefreshToken,
+    process.env.REFRESH_TOKEN_SECRET
+  );
+
+  const user = await User.findById(decodedRefreshToken._id);
+
+  if (!user) {
+    throw new ApiError(401, "invalid refresh token");
+  }
+
+  if (incomingRefreshToken !== user?.refreshToken) {
+    throw new ApiError(
+      401,
+      "Refresh Token is Expired or not valid refreshToken "
+    );
+  }
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+    user._id
+  );
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new apiResponse(
+        200,
+        { refreshToken, accessToken },
+        "accessToken refreshed"
+      )
+    );
 });
 
 const changeCurrentPassword = asyncHandler(async (req, res) => {

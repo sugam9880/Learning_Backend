@@ -37,6 +37,16 @@ app.use("/api/v1/subscription", subscriptionRouter);
 app.use("/api/v1/video", videoRouter);
 app.use("/api/v1/like", likeRouter);
 
-console.log("working");
+app.use((err, req, res, next) => {
+  res.status(err.statusCode || 500).json({
+    statusCode: err.statusCode || 500,
+    message: err.message || "Something went wrong",
+    success: err.success ?? false,
+    data: err.data ?? null,
+    errors: err.errors ?? [],
+  });
+});
+
+// console.log("working");
 // http://localhost:8000/users/registration
 export { app };
