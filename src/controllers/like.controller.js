@@ -54,16 +54,6 @@ const dislike = asyncHandler(async (req, res) => {
     .json(new apiResponse(200, { disliked }, "Disliked Successfully"));
 });
 
-// const getLikeDocument = asyncHandler(async (req, res) => {
-//   const geTLikeDoc = await Like.find();
-//   if (!geTLikeDoc && geTLikeDoc.length > 0) {
-//     throw new ApiError(409, "no likes yet");
-//   }
-//   return res
-//     .status(200)
-//     .json(new apiResponse(200, { geTLikeDoc }, "got like doc"));
-// });
-
 const likeStatus = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
   const like = await Like.findOne({ videoId });
@@ -73,4 +63,58 @@ const likeStatus = asyncHandler(async (req, res) => {
   }
   return res.status(200).json(new apiResponse(200, false, " not liked"));
 });
-export { like, dislike, likeStatus };
+const getLikedvideos = asyncHandler(async (req, res) => {
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+  const like = await Like.aggregate([
+    {
+      $sort: {
+        createdAt: -1,
+      },
+    },
+    {
+      $skip: skip,
+    },
+    {
+      $limit: limit,
+    },
+    {
+      $lookup: {
+        from: "videos",
+        localField: "videoId",
+        foreignField: "_id",
+        as: "likedVideos",
+      },
+    },
+    {
+      $unwind: "$likedVideos",
+    },
+    {
+      $replaceWith: "$likedVideos",
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "userInfo",
+        pipeline: [
+          {
+            $project: {
+              password: 0,
+              refreshToken: 0,
+            },
+          },
+        ],
+      },
+    },
+  ]);
+  if (!like && like.length > 0) {
+    throw new ApiError(400, "no Liked Videos");
+  }
+  return res
+    .status(200)
+    .json(new apiResponse(200, { like }, "got liked videos successfully"));
+});
+export { like, dislike, likeStatus, getLikedvideos };
