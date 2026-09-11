@@ -5,6 +5,7 @@ import {
   addToPalyList,
   createPlayList,
   deletePlayList,
+  getPlayList,
   removeFromPlayList,
 } from "../controllers/playList.controller.js";
 
@@ -31,5 +32,8 @@ playlistRouter
 playlistRouter
   .route("/PlayList/deletePlayList/:PlayListId/:videoId")
   .delete(verifyjwt, deletePlayList);
+
+//getAllPlayList
+playlistRouter.route("/PlayList/getAllPlayList").get(verifyjwt, getPlayList);
 
 export { playlistRouter };

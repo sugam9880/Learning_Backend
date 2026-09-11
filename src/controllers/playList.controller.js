@@ -14,16 +14,14 @@ const createPlayList = asyncHandler(async (req, res) => {
   }
   const PlayListData = {
     name,
-    desciption,
+    description,
     owner,
   };
   if (videoId) {
     PlayListData.videoId = [videoId];
   }
 
-  const PlayList = await Playlist.create(PlayListData);
-
-  const playList = await Playlist.findOne({ name, description, videoId });
+  const playList = await Playlist.create(PlayListData);
 
   if (!playList) {
     throw new ApiError(409, "playList not created");
@@ -135,4 +133,24 @@ const deletePlayList = asyncHandler(async (req, res) => {
     .json(new apiResponse(200, { deletePlayList }, "PlayList deleted"));
 });
 
-export { createPlayList, addToPalyList, removeFromPlayList, deletePlayList };
+const getPlayList = asyncHandler(async (req, res) => {
+  // const { PlayListId } = req.params; // id
+  // if (!PlayListId) {
+  //   throw new ApiError(409, "required playlistId");
+  // }
+  const playList = await Playlist.find();
+  if (!(playList && playList.length > 0)) {
+    throw new ApiError(400, "no playList found");
+  }
+  return res
+    .status(200)
+    .json(new apiResponse(200, { playList }, "got successfully"));
+});
+
+export {
+  createPlayList,
+  addToPalyList,
+  removeFromPlayList,
+  deletePlayList,
+  getPlayList,
+};
