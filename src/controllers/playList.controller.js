@@ -5,11 +5,11 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { Playlist } from "../models/playList.model.js";
 
 const createPlayList = asyncHandler(async (req, res) => {
-  const { name, desciption } = req.body;
+  const { name, description } = req.body;
   const { videoId } = req.params; // id
   const owner = req.user?._id;
 
-  if (!(name && desciption)) {
+  if (!(name && description)) {
     throw new ApiError(409, "server failed try again");
   }
   const PlayListData = {
@@ -62,9 +62,9 @@ const addToPalyList = asyncHandler(async (req, res) => {
     }
   );
 
-  if (!(name && desciption && user)) {
-    throw new ApiError(400, "Name and Desciption are required");
-  }
+  // if (!(name && desciption && user)) {
+  //   throw new ApiError(400, "Name and Desciption are required");
+  // }
   return res
     .status(200)
     .json(new apiResponse(200, { addvideo }, "PlayList Created Successfully"));
@@ -134,14 +134,11 @@ const deletePlayList = asyncHandler(async (req, res) => {
 });
 
 const getPlayList = asyncHandler(async (req, res) => {
-  // const { PlayListId } = req.params; // id
-  // if (!PlayListId) {
-  //   throw new ApiError(409, "required playlistId");
-  // }
   const playList = await Playlist.find();
   if (!(playList && playList.length > 0)) {
     throw new ApiError(400, "no playList found");
   }
+
   return res
     .status(200)
     .json(new apiResponse(200, { playList }, "got successfully"));

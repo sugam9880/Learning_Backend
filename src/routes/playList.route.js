@@ -12,7 +12,7 @@ import {
 const playlistRouter = Router();
 // creatingPlayList and adding video if there is videoId
 playlistRouter
-  .route("/PlayList/createPlayList/:videoId")
+  .route("/PlayList/createPlayList")
   .post(verifyjwt, createPlayList);
 
 // adding video to playList
