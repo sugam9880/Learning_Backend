@@ -146,4 +146,29 @@ const getAllVideos = asyncHandler(async (req, res) => {
     .json(new apiResponse(200, { video }, "videos got successfully"));
 });
 
-export { uploadvideo, removeVideo, getAllVideos };
+const updateViewsOfVideo = asyncHandler(async (req, res) => {
+  const { videoId } = req.params;
+  if (!videoId) {
+    return new ApiError(401, "videoId is required");
+  }
+
+  const findDocandUpdate = await Video.findOneAndUpdate(
+    {
+      _id: videoId,
+    },
+    {
+      $inc: {
+        views: 1,
+      },
+    },
+    { new: true }
+  );
+  if (!findDocandUpdate) {
+    throw new ApiError(400, "doc not found");
+  }
+  return res
+    .status(200)
+    .json(new apiResponse(200, { findDocandUpdate }, "view + 1"));
+});
+
+export { uploadvideo, removeVideo, getAllVideos, updateViewsOfVideo };

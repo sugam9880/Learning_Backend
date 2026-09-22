@@ -5,6 +5,7 @@ import {
   uploadvideo,
   removeVideo,
   getAllVideos,
+  updateViewsOfVideo,
 } from "../controllers/video.contoller.js";
 
 const videoRouter = Router();
@@ -26,4 +27,5 @@ videoRouter.route("/uploadingVideo").post(
 videoRouter.route("/deletevideo/:videoId").get(removeVideo);
 
 videoRouter.route("/All_YtVideos").get(getAllVideos);
+videoRouter.route("/updateView/:videoId").patch(updateViewsOfVideo);
 export { videoRouter };
