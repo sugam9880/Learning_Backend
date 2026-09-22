@@ -3,6 +3,7 @@ import { apiResponse } from "../utils/Apiresponse.js";
 import mongoose from "mongoose";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { Playlist } from "../models/playList.model.js";
+import { Video } from "../models/video.model.js";
 
 const createPlayList = asyncHandler(async (req, res) => {
   const { name, description } = req.body;
@@ -144,10 +145,77 @@ const getPlayList = asyncHandler(async (req, res) => {
     .json(new apiResponse(200, { playList }, "got successfully"));
 });
 
+const getVideo = asyncHandler(async (req, res) => {
+  const { PlayListId } = req.params;
+  if (!PlayListId) {
+    throw new ApiError(400, "require playListId");
+  }
+  // const playList = await Playlist.findOne({
+  //   _id: PlayListId,
+  // });
+
+  // const videos = await Video.find({
+  //   _id: {
+  //     $in: playList.videoId,
+  //   },
+  // });
+
+  const videos = await Playlist.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(PlayListId),
+      },
+    },
+    {
+      $lookup: {
+        from: "videos",
+        localField: "videoId",
+        foreignField: "_id",
+        as: "playListVideos",
+        pipeline: [
+          {
+            $lookup: {
+              from: "users",
+              localField: "owner",
+              foreignField: "_id",
+              as: "owner",
+              pipeline: [
+                {
+                  $project: {
+                    password: 0,
+                    refreshToken: 0,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $unwind: "$owner",
+          },
+        ],
+      },
+    },
+    {
+      $project: {
+        playListVideos: 1,
+      },
+    },
+  ]);
+
+  if (!videos) {
+    throw new ApiError(400, "no video available");
+  }
+
+  return res
+    .status(200)
+    .json(new apiResponse(200, { videos }, "videos got successfully"));
+});
+
 export {
   createPlayList,
   addToPalyList,
   removeFromPlayList,
   deletePlayList,
   getPlayList,
+  getVideo,
 };
