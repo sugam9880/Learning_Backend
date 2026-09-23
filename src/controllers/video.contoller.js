@@ -53,7 +53,7 @@ const removeVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
 
   if (!videoId) {
-    throw new ApiError(409, "unable to delete this video");
+    throw new ApiError(409, "require videoId");
   }
 
   const video = await Video.findByIdAndDelete(videoId);
@@ -63,7 +63,7 @@ const removeVideo = asyncHandler(async (req, res) => {
   }
   return res
     .status(200)
-    .json(new apiResponse(200, {}, " video has been removed"));
+    .json(new apiResponse(200, { video }, " video has been removed"));
 });
 
 // const getAllVideos = asyncHandler(async (req, res) => {

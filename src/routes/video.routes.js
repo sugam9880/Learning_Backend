@@ -24,7 +24,7 @@ videoRouter.route("/uploadingVideo").post(
   uploadvideo
 );
 
-videoRouter.route("/deletevideo/:videoId").get(removeVideo);
+videoRouter.route("/deletevideo/:videoId").delete(removeVideo);
 
 videoRouter.route("/All_YtVideos").get(getAllVideos);
 videoRouter.route("/updateView/:videoId").patch(updateViewsOfVideo);
