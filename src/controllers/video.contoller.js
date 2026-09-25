@@ -2,8 +2,8 @@ import { ApiError } from "../utils/Apierrors.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { apiResponse } from "../utils/Apiresponse.js";
 import { Subscription } from "../models/subscription.model.js";
-import mongoose from "mongoose";
 import { Video } from "../models/video.model.js";
+import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 const uploadvideo = asyncHandler(async (req, res) => {
@@ -171,4 +171,54 @@ const updateViewsOfVideo = asyncHandler(async (req, res) => {
     .json(new apiResponse(200, { findDocandUpdate }, "view + 1"));
 });
 
-export { uploadvideo, removeVideo, getAllVideos, updateViewsOfVideo };
+const updateWatchHistory = asyncHandler(async (req, res) => {
+  const { videoId } = req.params;
+  const user = req.user._id;
+
+  if (!videoId) {
+    throw new ApiError(400, "videoId is required");
+  }
+
+  const alreadyExist = await User.findOne({
+    _id: user,
+    watchHistory: videoId,
+  });
+
+  if (alreadyExist) {
+    throw new ApiError(409, "video already exists");
+  }
+
+  const addVideoToWatchHistory = await User.findByIdAndUpdate(
+    {
+      _id: user,
+    },
+    {
+      $addToSet: {
+        watchHistory: videoId,
+      },
+    },
+    {
+      returnDocument: "after",
+    }
+  );
+  if (!addVideoToWatchHistory) {
+    throw new ApiError(401, "no video found in watch history");
+  }
+  return res
+    .status(200)
+    .json(
+      new apiResponse(
+        200,
+        { addVideoToWatchHistory },
+        "video added to watch history"
+      )
+    );
+});
+
+export {
+  uploadvideo,
+  removeVideo,
+  getAllVideos,
+  updateViewsOfVideo,
+  updateWatchHistory,
+};
