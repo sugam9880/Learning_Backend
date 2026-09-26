@@ -441,16 +441,21 @@ const getWatchHistory = asyncHandler(async (req, res) => {
       },
     },
   ]);
+  if (!user) {
+    throw new ApiError(400, "video not found");
+  }
 
-  return res
-    .status(200)
-    .json(
-      new apiResponse(
-        200,
-        user[0].watchHistory,
-        "successfullt got watchHistory"
-      )
-    );
+  console.log("working upto here sugam gyawali");
+  console.log(user);
+
+  return res.status(200).json(
+    new apiResponse(
+      200,
+      user[0].watchHistory,
+      // user,
+      "successfullt got watchHistory"
+    )
+  );
 });
 
 const getUserVideos = asyncHandler(async (req, res) => {
