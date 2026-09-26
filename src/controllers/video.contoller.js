@@ -161,7 +161,9 @@ const updateViewsOfVideo = asyncHandler(async (req, res) => {
         views: 1,
       },
     },
-    { new: true }
+    {
+      returnDocument: "after",
+    }
   );
   if (!findDocandUpdate) {
     throw new ApiError(400, "doc not found");
@@ -189,9 +191,7 @@ const updateWatchHistory = asyncHandler(async (req, res) => {
   }
 
   const addVideoToWatchHistory = await User.findByIdAndUpdate(
-    {
-      _id: user,
-    },
+    { _id: user },
     {
       $addToSet: {
         watchHistory: videoId,

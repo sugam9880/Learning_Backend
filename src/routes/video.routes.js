@@ -29,5 +29,7 @@ videoRouter.route("/deletevideo/:videoId").delete(removeVideo);
 
 videoRouter.route("/All_YtVideos").get(getAllVideos);
 videoRouter.route("/updateView/:videoId").patch(updateViewsOfVideo);
-videoRouter.route("/updateView/:videoId").patch(updateWatchHistory);
+videoRouter
+  .route("/updateHistory/:videoId")
+  .patch(verifyjwt, updateWatchHistory);
 export { videoRouter };
