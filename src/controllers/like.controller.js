@@ -98,13 +98,16 @@ const getLikedvideos = asyncHandler(async (req, res) => {
         from: "users",
         localField: "owner",
         foreignField: "_id",
-        as: "userInfo",
+        as: "owner",
         pipeline: [
           {
             $project: {
               password: 0,
               refreshToken: 0,
             },
+          },
+          {
+            $unwind: "$owner",
           },
         ],
       },

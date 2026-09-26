@@ -471,6 +471,33 @@ const getUserVideos = asyncHandler(async (req, res) => {
         localField: "_id",
         foreignField: "owner",
         as: "userVideos",
+        pipeline: [
+          {
+            $lookup: {
+              from: "users",
+              localField: "owner",
+              foreignField: "_id",
+              as: "owner",
+              pipeline: [
+                {
+                  $project: {
+                    password: 0,
+                    refreshToken: 0,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $unwind: "$owner",
+          },
+        ],
+      },
+    },
+    {
+      $project: {
+        password: 0,
+        refreshToken: 0,
       },
     },
     {
