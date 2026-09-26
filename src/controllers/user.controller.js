@@ -480,15 +480,11 @@ const getUserVideos = asyncHandler(async (req, res) => {
         },
       },
     },
-    {
-      $project: {
-        userVideos: 1,
-      },
-    },
   ]);
   if (!user?.length) {
     throw new ApiError(400, "video not found");
   }
+  console.log("myvideos", user);
 
   return res
     .status(200)
