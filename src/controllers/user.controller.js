@@ -518,6 +518,38 @@ const getUserVideos = asyncHandler(async (req, res) => {
     .json(new apiResponse(200, { user }, "videos got successfully"));
 });
 
+const getChannel = asyncHandler(async (req, res) => {
+  const { userName } = req.params;
+  const channel = await User.aggregate([
+    {
+      $match: {
+        userName,
+      },
+    },
+    {
+      $lookup: {
+        from: "videos",
+        localField: "_id",
+        foreignField: "owner",
+        as: "Videos",
+      },
+    },
+    {
+      $project: {
+        password: 0,
+        refreshToken: 0,
+        watchHistory: 0,
+      },
+    },
+  ]);
+  if (!channel) {
+    throw new ApiError(401, "something went wrong");
+  }
+  console.log(channel);
+
+  return res.status(200).json(200, { channel }, "channel got successfully");
+});
+
 export {
   registerUser,
   loginUser,
@@ -531,6 +563,7 @@ export {
   getUserChannelProfile,
   getWatchHistory,
   getUserVideos,
+  getChannel,
 };
 
 //get user details from frontend

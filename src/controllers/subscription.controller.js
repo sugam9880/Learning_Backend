@@ -61,4 +61,49 @@ const unsubscrbe = asyncHandler(async (req, res) => {
     .json(200, { unsubscribed }, "unsubscribe successfully");
 });
 
-export { subscribe, unsubscrbe };
+const getSubscriber = asyncHandler(async (req, res) => {
+  const subscribe = await Subscription.aggregate([
+    {
+      $match: {
+        subscriber: new mongoose.Types.ObjectId(req.user._id),
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "channelId",
+        foreignField: "_id",
+        as: "Users",
+        pipeline: [
+          {
+            $project: {
+              password: 0,
+              refreshToken: 0,
+              watchHistory: 0,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $unwind: "$Users",
+    },
+    {
+      $replaceWith: "$Users",
+    },
+  ]);
+  if (!subscribe) {
+    throw new ApiError(401, "haven't subscribe yet!");
+  }
+  return res
+    .status(200)
+    .json(
+      new apiResponse(
+        200,
+        { subscribe },
+        "successfullt found the subscribed channel"
+      )
+    );
+});
+
+export { subscribe, unsubscrbe, getSubscriber };

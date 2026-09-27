@@ -106,11 +106,14 @@ const getLikedvideos = asyncHandler(async (req, res) => {
               refreshToken: 0,
             },
           },
-          {
-            $unwind: "$owner",
-          },
+          // {
+          //   $unwind: "$owner",
+          // },
         ],
       },
+    },
+    {
+      $unwind: "$owner",
     },
   ]);
   if (!like && like.length > 0) {

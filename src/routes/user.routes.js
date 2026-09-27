@@ -12,6 +12,7 @@ import {
   getUserChannelProfile,
   getWatchHistory,
   getUserVideos,
+  getChannel,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyjwt } from "../middlewares/auth.middleware.js";
@@ -55,5 +56,6 @@ router.route("/c/:userName").get(verifyjwt, getUserChannelProfile);
 router.route("/watcHistory").get(verifyjwt, getWatchHistory);
 router.route("/user_videos").get(verifyjwt, getUserVideos);
 router.route("/tokenRefreshed").post(verifyjwt, refreshAccessToken);
+router.route("/channel/:userName").get(verifyjwt, getChannel);
 
 export { router };
