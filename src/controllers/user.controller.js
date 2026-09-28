@@ -5,7 +5,7 @@ import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { apiResponse } from "../utils/Apiresponse.js";
 import jwt from "jsonwebtoken";
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -266,7 +266,7 @@ const getCurrUser = asyncHandler(async (req, res) => {
 
 const updateAccountDetails = asyncHandler(async (req, res) => {
   const { userName, fullName } = req.body;
-  if (!(userName, email, fullName)) {
+  if (!(userName, fullName)) {
     return new ApiError(400, "these field are required");
   }
   const user = User.findByIdAndUpdate(
@@ -520,11 +520,12 @@ const getUserVideos = asyncHandler(async (req, res) => {
 
 const getChannel = asyncHandler(async (req, res) => {
   const { userName } = req.params;
+  const matchCondition = userName
+    ? { userName: userName }
+    : { _id: new mongoose.Types.ObjectId(req.user._id) };
   const channel = await User.aggregate([
     {
-      $match: {
-        userName,
-      },
+      $match: matchCondition,
     },
     {
       $lookup: {
@@ -545,9 +546,11 @@ const getChannel = asyncHandler(async (req, res) => {
   if (!channel) {
     throw new ApiError(401, "something went wrong");
   }
-  console.log(channel);
+  // console.log(channel);
 
-  return res.status(200).json(200, { channel }, "channel got successfully");
+  return res
+    .status(200)
+    .json(new apiResponse(200, { channel }, "got channel successfully"));
 });
 
 export {
