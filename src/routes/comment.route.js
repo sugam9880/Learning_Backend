@@ -4,6 +4,7 @@ import { verifyjwt } from "../middlewares/auth.middleware.js";
 import {
   addComent,
   deleteComment,
+  getComment,
   updateComment,
 } from "../controllers/comment.controller.js";
 
@@ -18,5 +19,6 @@ commentRouter
 commentRouter
   .route("/deletingcomment/:commentID/:videoId")
   .delete(verifyjwt, deleteComment);
+commentRouter.route("/Allcomment/comment/:videoId").get(getComment);
 
 export { commentRouter };

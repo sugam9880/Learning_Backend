@@ -265,11 +265,17 @@ const getCurrUser = asyncHandler(async (req, res) => {
 });
 
 const updateAccountDetails = asyncHandler(async (req, res) => {
+  console.log("body", req.body);
+  console.log("USER", req.user);
+
   const { userName, fullName } = req.body;
-  if (!(userName, fullName)) {
+  if (!(userName && fullName)) {
     return new ApiError(400, "these field are required");
   }
-  const user = User.findByIdAndUpdate(
+  console.log("userName =", userName);
+  console.log("fullName =", fullName);
+
+  const user = await User.findByIdAndUpdate(
     req.user?._id,
     {
       $set: {

@@ -23,12 +23,7 @@ const addComent = asyncHandler(async (req, res) => {
   if (!commenter) {
     throw new ApiError(400, "db not created");
   }
-
-  // const commenterDoc = await Comment.findById(videoId);
-
-  // if (!commenterDoc) {
-  //     throw new ApiError(400,"Invalid Comment")
-  // }
+  console.log("successfully commented the comment");
 
   return res
     .status(200)
@@ -82,4 +77,44 @@ const deleteComment = asyncHandler(async (req, res) => {
     .json(new apiResponse(200, { deleting }, "comment deleted successfully"));
 });
 
-export { addComent, updateComment, deleteComment };
+const getComment = asyncHandler(async (req, res) => {
+  const { videoId } = req.params;
+  if (!videoId) {
+    throw new ApiError(402, "vidoeId is required");
+  }
+  const comment = await Comment.aggregate([
+    {
+      $match: {
+        videoId: new mongoose.Types.ObjectId(videoId),
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "commenter",
+        pipeline: [
+          {
+            $project: {
+              password: 0,
+              refreshToken: 0,
+              watchHistory: 0,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $unwind: "$commenter",
+    },
+  ]);
+  if (comment.length === 0) {
+    new apiResponse(200, { comment }, "no comments yet!");
+  }
+  return res
+    .status(200)
+    .json(new apiResponse(200, { comment }, "got the comment successfully!"));
+});
+
+export { addComent, updateComment, deleteComment, getComment };
