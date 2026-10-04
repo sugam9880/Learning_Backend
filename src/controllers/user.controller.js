@@ -529,34 +529,41 @@ const getChannel = asyncHandler(async (req, res) => {
   const matchCondition = userName
     ? { userName: userName }
     : { _id: new mongoose.Types.ObjectId(req.user._id) };
-  const channel = await User.aggregate([
-    {
-      $match: matchCondition,
-    },
-    {
-      $lookup: {
-        from: "videos",
-        localField: "_id",
-        foreignField: "owner",
-        as: "Videos",
+  if (userName || req.user._id) {
+    const channel = await User.aggregate([
+      {
+        $match: matchCondition,
       },
-    },
-    {
-      $project: {
-        password: 0,
-        refreshToken: 0,
-        watchHistory: 0,
+      {
+        $lookup: {
+          from: "videos",
+          localField: "_id",
+          foreignField: "owner",
+          as: "Videos",
+        },
       },
-    },
-  ]);
-  if (!channel) {
-    throw new ApiError(401, "something went wrong");
-  }
-  // console.log(channel);
+      {
+        $project: {
+          password: 0,
+          refreshToken: 0,
+          watchHistory: 0,
+        },
+      },
+    ]);
+    if (!channel) {
+      throw new ApiError(401, "something went wrong");
+    }
+    // console.log(channel);
 
-  return res
-    .status(200)
-    .json(new apiResponse(200, { channel }, "got channel successfully"));
+    return res
+      .status(200)
+      .json(new apiResponse(200, { channel }, "got channel successfully"));
+  } else {
+    throw new ApiError(
+      404,
+      "user not found which means user has not logged In"
+    );
+  }
 });
 
 export {

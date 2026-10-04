@@ -108,11 +108,22 @@ const getSubscriber = asyncHandler(async (req, res) => {
 
 const subscribeStatus = asyncHandler(async (req, res) => {
   const subscriberId = req.user._id;
-  const subscribe = await Subscription.findOne({ subscriber: subscriberId });
-  if (subscribe) {
-    return res.status(200).json(new apiResponse(200, true, " subscribed"));
+  if (!subscriberId) {
+    return res
+      .status(200)
+      .json(new apiResponse(200, false, "subscribederId required"));
+  } else {
+    const subscribe = await Subscription.findOne({
+      subscriber: subscriberId,
+    });
+    if (subscribe) {
+      return res.status(200).json(new apiResponse(200, true, " subscribed"));
+    } else {
+      return res
+        .status(200)
+        .json(new apiResponse(200, false, " not subscribed"));
+    }
   }
-  return res.status(200).json(new apiResponse(200, false, " not subscribed"));
 });
 
 export { subscribe, unsubscrbe, getSubscriber, subscribeStatus };
