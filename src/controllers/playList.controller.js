@@ -135,7 +135,10 @@ const deletePlayList = asyncHandler(async (req, res) => {
 });
 
 const getPlayList = asyncHandler(async (req, res) => {
-  const playList = await Playlist.find();
+  const playListCreator = new mongoose.Types.ObjectId(req.user._id);
+  const playList = await Playlist.find({
+    owner: playListCreator,
+  });
   if (!(playList && playList.length > 0)) {
     throw new ApiError(400, "no playList found");
   }

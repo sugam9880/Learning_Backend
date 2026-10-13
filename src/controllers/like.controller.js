@@ -76,7 +76,11 @@ const getLikedvideos = asyncHandler(async (req, res) => {
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 10;
   const skip = (page - 1) * limit;
+  const user = mongoose.Types.ObjectId(req.user._id);
   const like = await Like.aggregate([
+    {
+      $match: { likedBy: user },
+    },
     {
       $sort: {
         createdAt: -1,
