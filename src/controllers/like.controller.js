@@ -56,20 +56,21 @@ const dislike = asyncHandler(async (req, res) => {
 
 const likeStatus = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
-  const like = await Like.findOne({ videoId });
-  // const like = await Like.find({ videoId });
+  // const user = req.user._id;
+  const like = await Like.findOne({
+    videoId,
+    // likedBy: user,
+  });
   const likeCount = await Like.countDocuments({ videoId });
 
   if (like) {
-    return res.status(200).json(new apiResponse(200, { likeCount }, " liked"));
+    return res
+      .status(200)
+      .json(new apiResponse(200, [{ likeCount }, true], " liked"));
   }
   return res
     .status(200)
-    .json(new apiResponse(200, { likeCount }, " not liked"));
-  // if (like) {
-  //   return res.status(200).json(new apiResponse(200, true, " liked"));
-  // }
-  // return res.status(200).json(new apiResponse(200, false, " not liked"));
+    .json(new apiResponse(200, [{ likeCount }, false], " not liked"));
 });
 const getLikedvideos = asyncHandler(async (req, res) => {
   const page = Number(req.query.page) || 1;

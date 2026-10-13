@@ -526,9 +526,13 @@ const getUserVideos = asyncHandler(async (req, res) => {
 
 const getChannel = asyncHandler(async (req, res) => {
   const { userName } = req.params;
+  console.log("get channelllllllllll", req.user._id);
+
   const matchCondition = userName
     ? { userName: userName }
     : { _id: new mongoose.Types.ObjectId(req.user._id) };
+  console.log("loggedIn user", req.user);
+
   if (userName || req.user._id) {
     const channel = await User.aggregate([
       {

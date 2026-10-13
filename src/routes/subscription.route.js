@@ -20,7 +20,7 @@ subscriptionRouter
 subscriptionRouter.route("/getSubscriber").get(verifyjwt, getSubscriber);
 //subscribe status
 subscriptionRouter
-  .route("/subscribeStatus_and/count")
-  .get(verifyjwt, subscribeStatus);
+  .route("/subscribeStatus_/:channelId/and/count")
+  .get(subscribeStatus);
 
 export { subscriptionRouter };

@@ -55,8 +55,8 @@ router
 router.route("/c/:userName").get(verifyjwt, getUserChannelProfile);
 router.route("/watcHistory").get(verifyjwt, getWatchHistory);
 router.route("/user_videos").get(verifyjwt, getUserVideos);
-router.route("/tokenRefreshed").post(verifyjwt, refreshAccessToken);
-router.route("/channel/:userName").get(verifyjwt, getChannel);
-router.route("/channel").get(getChannel);
+// router.route("/tokenRefreshed").post(verifyjwt, refreshAccessToken);
+router.route("/channel/:userName").get(getChannel);
+router.route("/channel").get(verifyjwt, getChannel);
 
 export { router };

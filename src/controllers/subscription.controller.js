@@ -6,10 +6,6 @@ import mongoose from "mongoose";
 import { User } from "../models/user.model.js";
 
 const subscribe = asyncHandler(async (req, res) => {
-  // get the data from backend
-  // check data
-  // store the channel_id and user_id who is loggedIn
-  // check for the channel and user exist in DB
   const { channelId } = req.params;
   if (!channelId) {
     throw new ApiError(400, "not found");
@@ -107,22 +103,26 @@ const getSubscriber = asyncHandler(async (req, res) => {
 });
 
 const subscribeStatus = asyncHandler(async (req, res) => {
-  const subscriberId = req.user._id;
-  if (!subscriberId) {
-    return res
-      .status(200)
-      .json(new apiResponse(200, false, "subscribederId required"));
-  } else {
-    const subscribe = await Subscription.findOne({
-      subscriber: subscriberId,
+  const { channelId } = req.params;
+  if (req.user._id) {
+    const subscriber = req.user._id;
+    const findSubscription = await Subscription.find({
+      channelId,
+      subscriber,
     });
-    if (subscribe) {
-      return res.status(200).json(new apiResponse(200, true, " subscribed"));
-    } else {
+    const subscriberCount = await Subscription.countDocuments({
+      channelId,
+    });
+    if (!(findSubscription && findSubscription.length > 0)) {
       return res
         .status(200)
-        .json(new apiResponse(200, false, " not subscribed"));
+        .json(new apiResponse(200, [subscriberCount, false]));
+    } else {
+      return res.status(200).json(200, [subscriberCount], false);
     }
+  } else {
+    const subscriberCount = await Subscription.countDocuments({ channelId });
+    return res.status(200).json(200, [subscriberCount, false]);
   }
 });
 
