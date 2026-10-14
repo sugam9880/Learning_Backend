@@ -464,6 +464,27 @@ const getWatchHistory = asyncHandler(async (req, res) => {
   );
 });
 
+const removevideoFromWatchHistory = asyncHandler(async (req, res) => {
+  const { ownerId, videoId } = req.params;
+  if (!(ownerId && videoId)) {
+    throw new ApiError(
+      400,
+      "video cannot be removed due to some technical reasons"
+    );
+  }
+  const removeVideo = await User.findByIdAndUpdate(
+    {
+      _id: ownerId,
+    },
+    {
+      $pull: { watchHistory: videoId },
+    }
+  );
+  return res
+    .status(200)
+    .json(new apiResponse(200, { removeVideo }, "videoremoved successfully"));
+});
+
 const getUserVideos = asyncHandler(async (req, res) => {
   const user = await User.aggregate([
     {
@@ -584,6 +605,7 @@ export {
   getWatchHistory,
   getUserVideos,
   getChannel,
+  removevideoFromWatchHistory,
 };
 
 //get user details from frontend

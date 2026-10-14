@@ -13,6 +13,7 @@ import {
   getWatchHistory,
   getUserVideos,
   getChannel,
+  removevideoFromWatchHistory,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyjwt } from "../middlewares/auth.middleware.js";
@@ -58,5 +59,8 @@ router.route("/user_videos").get(verifyjwt, getUserVideos);
 // router.route("/tokenRefreshed").post(verifyjwt, refreshAccessToken);
 router.route("/channel/:userName").get(getChannel);
 router.route("/channel").get(verifyjwt, getChannel);
+router
+  .route("/removeVideo/:ownerId/:videoId")
+  .patch(verifyjwt, removevideoFromWatchHistory);
 
 export { router };
