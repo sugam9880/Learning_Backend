@@ -60,7 +60,7 @@ router.route("/user_videos").get(verifyjwt, getUserVideos);
 router.route("/channel/:userName").get(getChannel);
 router.route("/channel").get(verifyjwt, getChannel);
 router
-  .route("/removeVideo/:ownerId/:videoId")
+  .route("/removeVideo/:ownerId")
   .patch(verifyjwt, removevideoFromWatchHistory);
 
 export { router };

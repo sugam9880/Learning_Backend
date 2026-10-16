@@ -465,8 +465,9 @@ const getWatchHistory = asyncHandler(async (req, res) => {
 });
 
 const removevideoFromWatchHistory = asyncHandler(async (req, res) => {
-  const { ownerId, videoId } = req.params;
-  if (!(ownerId && videoId)) {
+  const { ownerId } = req.params;
+  const { videoId } = req.body;
+  if (!ownerId) {
     throw new ApiError(
       400,
       "video cannot be removed due to some technical reasons"
@@ -477,7 +478,7 @@ const removevideoFromWatchHistory = asyncHandler(async (req, res) => {
       _id: ownerId,
     },
     {
-      $pull: { watchHistory: videoId },
+      $pull: { watchHistory: new mongoose.Types.ObjectId(videoId) },
     }
   );
   return res
